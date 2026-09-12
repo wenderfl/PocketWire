@@ -16,6 +16,13 @@ static int text_height(mu_Font font) {
     return r_get_text_height();
 }
 
+typedef struct dados{
+    int mtu;
+    char ip[16];
+    char netMask[16];
+    char broadcast[16];
+}Dados;
+
 int main(int argc, char **argv) {
     /* 1. Inicializa o renderizador/janela SDL */
     r_init();
@@ -25,17 +32,38 @@ int main(int argc, char **argv) {
     ctx.text_width = text_width;
     ctx.text_height = text_height;
 
+    Dados rede;
+
     //system("ifconfig > ifconfig.txt");
     char bin[300];
 
     FILE *fileIfConfig = fopen("ifconfig.txt", "r");
     char *texto = malloc(24*sizeof(char));
-    fgets(bin, sizeof(bin), fileIfConfig);
+    
+    //Linha 1 descartada
+    fgets(bin, sizeof(bin), fileIfConfig); 
 
-    fread(texto,  24, 6, fileIfConfig);
-    printf("\n%s\n", texto);
+    //pegando mtu - LINHA 1
+    sscanf(bin, "%*s %*s %*s %d", &rede.mtu); 
+    printf("\n%d\n", rede.mtu);
 
-   // File *ifconfig = 
+    //linha 2 - ipnet
+    fgets(bin, sizeof(bin),fileIfConfig);
+    
+    //pegando ip
+    sscanf(bin,"%s%s", rede.ip, rede.ip);
+    printf("\n%s\n", rede.ip);
+
+    //pegando netmask
+    sscanf(bin,"%*s %*s netmask %s", rede.netMask);
+    printf("\n%s\n", rede.netMask);
+
+    //pegando broadcast
+    sscanf(bin,"%*s %*s %*s %*s broadcast %s", rede.broadcast);
+    printf("\n%s\n", rede.broadcast);
+
+   // mu_Rect tela = mu_rect(0, 0, 800, 600);
+ //   int opcoes = MU_OPT_NOTITLE | MU_OPT_NORESIZE | MU_OPT_NOMOVE;
 
     /* 3. Loop principal */
     while (1) {
@@ -57,18 +85,40 @@ int main(int argc, char **argv) {
             }
         }
 
+
         /* Declaração dos elementos visuais */
     mu_begin(&ctx);
-        if (mu_begin_window(&ctx, "Simple Wireles ", mu_rect(10, 10, 200, 150))) {
-        mu_layout_row(&ctx, 2, (int[]) { 60, -1 }, 0);
+    mu_Rect tela = mu_rect(0, 0, 800, 600);
+    int opcoes = MU_OPT_NOTITLE | MU_OPT_NORESIZE | MU_OPT_NOFRAME;
 
-        mu_label(&ctx, "Your IP:");
-        mu_label(&ctx, texto);
+    if (mu_begin_window_ex(&ctx, "PocketWire", tela, opcoes)) {
+     //   if (mu_begin_window(&ctx, "PocketWire", mu_rect(0, 0, 1280, 720))) {
+        mu_layout_row(&ctx, 1, (int[]) { 60, -1 }, 0);
 
-            
+        char c[10]; 
+        char cc[10] = (char)rede.mtu;
+        sprintf(c, "%s", cc);
 
-        //system("ifconfig > ifconfig.txt");
+        //char char_mtu = (char)rede.mtu;
+        mu_label(&ctx, "MTU:");
+        mu_label(&ctx, c);
+  //      mu_button(&ctx, "Verificar");
 
+       // if(!mu_button_ex(&ctx,"Verificar", 0, MU_OPT_ALIGNRIGHT)){
+         //   if(rede.mtu!=1500)
+              //  mu_label(&ctx, "SEu MTU é anormal.");
+           // else
+              //  mu_label(&ctx, "Seu MTU esta normal.");  
+     //   } 
+
+        mu_label(&ctx, "IP:");
+        mu_label(&ctx, rede.ip);
+
+        mu_label(&ctx, "NetMask:");
+        mu_label(&ctx, rede.netMask);
+
+        mu_label(&ctx, "Broadcast:");
+        mu_label(&ctx, rede.broadcast);
 
 
         mu_end_window(&ctx);
