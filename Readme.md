@@ -7,7 +7,9 @@
 PocketWire
 </h1>
 
-<h3 align="center">
-Built with MicroUI
-</h3>
-
+<p align="center">
+  <a href="https://github.com/rxi/microui">
+    <img src="https://img.shields.io/badge/Built%20with-MicroUI-000000?style=for-the-badge">
+  </a>
+  <img src="https://img.shields.io/badge/C-00599C?style=for-the-badge&logo=c&logoColor=white">
+</p>
