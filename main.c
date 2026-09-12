@@ -65,6 +65,9 @@ int main(int argc, char **argv) {
    // mu_Rect tela = mu_rect(0, 0, 800, 600);
  //   int opcoes = MU_OPT_NOTITLE | MU_OPT_NORESIZE | MU_OPT_NOMOVE;
 
+    int flagMtu=0;
+    char msgMtu[30];
+
     /* 3. Loop principal */
     while (1) {
         /* Tratamento de eventos de entrada */
@@ -93,24 +96,29 @@ int main(int argc, char **argv) {
 
     if (mu_begin_window_ex(&ctx, "PocketWire", tela, opcoes)) {
      //   if (mu_begin_window(&ctx, "PocketWire", mu_rect(0, 0, 1280, 720))) {
-        mu_layout_row(&ctx, 1, (int[]) { 60, -1 }, 0);
+        mu_layout_row(&ctx, 4, (int[]) { 60, 60, 60, -1}, 0);
 
-        char c[10]; 
-        char cc[10] = (char)rede.mtu;
-        sprintf(c, "%s", cc);
+        char c[10];
+        sprintf(c, "%d", rede.mtu);
 
         //char char_mtu = (char)rede.mtu;
         mu_label(&ctx, "MTU:");
+
         mu_label(&ctx, c);
-  //      mu_button(&ctx, "Verificar");
 
-       // if(!mu_button_ex(&ctx,"Verificar", 0, MU_OPT_ALIGNRIGHT)){
-         //   if(rede.mtu!=1500)
-              //  mu_label(&ctx, "SEu MTU é anormal.");
-           // else
-              //  mu_label(&ctx, "Seu MTU esta normal.");  
-     //   } 
+        if(mu_button_ex(&ctx, "VERIFICAR",0,0)){
+            flagMtu=1;
+        }
 
+        if(flagMtu==1 && (rede.mtu==1500))
+            sprintf(msgMtu, "MTU normal.");
+        else if(rede.mtu!=1500)
+            sprintf(msgMtu, "Seu MTU é anormal.");
+
+        mu_label(&ctx, msgMtu);
+
+ 
+        mu_layout_row(&ctx, 2, (int[]) { 80, -1 }, 0);
         mu_label(&ctx, "IP:");
         mu_label(&ctx, rede.ip);
 
